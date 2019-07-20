@@ -25,8 +25,7 @@ pub fn encoding_game(game : &GameState, player : u32){
             let mut temp_cards = vec![];
             for &card in other_players_hands.get(&player){
                 for c in card {
-                    temp_cards.push(c.color.to_string());
-                    temp_cards.push(c.value.to_string());
+                    temp_cards.push(c.color.to_string()+ &c.value.to_string());
                 }
             }
             let joined = temp_cards.join("-");
