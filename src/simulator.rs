@@ -2,26 +2,11 @@ use rand::{self, Rng, SeedableRng};
 use fnv::FnvHashMap;
 use std::fmt;
 use crossbeam;
+extern crate csv;
 
 use game::*;
 use strategy::*;
-use csv::Writer;
-
-extern crate csv;
- #[macro_use]
- extern crate serde_derive;
-
- #[derive(Serialize)]
- struct Row<'a> {
-     game_idx: &'a u64,
-     rnd_idx: u64,
-     cur_player_id: u64,
-     p1_cards: string,
-     p2_cards: string,
-     p3_cards: string,
-     p4_cards: string,
-     p5_cards: string,
- }
+use encoding_csv::*;
 
 fn new_deck(seed: u32) -> Cards {
     let mut deck: Cards = Cards::new();
@@ -68,30 +53,7 @@ pub fn simulate_once(
         };
 
         //========================================================
-        let path = Path::new("rust_agent.csv");
-        let mut writer = Writer::from_file(&path);
-        let borrowedgameview = game.get_view(player);
-        let other_players_hands = borrowedgameview.other_hands; // FnvHashMap<Player, &'a Cards>
-        let cur_player = borrowedgameview.player;
-        let board = borrowedgameview.board;
-        let num_player = board.num_player;
-        for player in 0..num_player {
-            writer.serialize(Row {
-             game_idx: "Boston",
-             country: "United States",
-             population: 4628910,
-            })?;
-
-            println!("{}",player);
-            let cur_ply_cards = other_players_hands.get(&player);
-            for &card in cur_ply_cards{
-                for i in 0..4 {
-                    println!("{}", card[i]);
-                        // println!("color:{}, value:{}",card.color,card.value);
-                }
-            }
-        }
-
+        ::encoding_csv::encoding_game(&game, player);
         //========================================================
 
         let turn = game.process_choice(choice);

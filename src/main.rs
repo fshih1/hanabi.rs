@@ -6,10 +6,12 @@ extern crate crossbeam;
 extern crate fnv;
 extern crate float_ord;
 
+
 mod helpers;
 mod game;
 mod simulator;
 mod strategy;
+mod encoding_csv;
 mod strategies {
     pub mod examples;
     pub mod cheating;
@@ -117,6 +119,7 @@ fn main() {
     let strategy_str : &str = &matches.opt_str("g").unwrap_or("cheat".to_string());
 
     sim_games(n_players, strategy_str, seed, n_trials, n_threads, progress_info).info();
+
 }
 
 fn sim_games(n_players: u32, strategy_str: &str, seed: Option<u32>, n_trials: u32, n_threads: u32, progress_info: Option<u32>)
@@ -158,6 +161,7 @@ fn sim_games(n_players: u32, strategy_str: &str, seed: Option<u32>, n_trials: u3
         },
     };
     simulator::simulate(&game_opts, strategy_config, seed, n_trials, n_threads, progress_info)
+
 }
 
 fn get_results_table() -> String {
